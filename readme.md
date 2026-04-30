@@ -8,13 +8,6 @@ Este repositório entrega um ambiente reprodutível para comparar o custo de ope
 
 O dashboard principal é o `comparison-overview`, com leituras live de RPS, P99, CPU e memória. As variáveis ativas são `topology`, `query_step` e `rate_window`. Na prática, a regra operacional validada é simples: `query_step=5s` funciona bem para resolução visual, mas `rate_window` precisa permanecer em janelas seguras de `15s` ou mais. O valor atualmente validado para leitura estável é `40s`.
 
-A rodada de referência consolidada neste README é `2026-04-30T14:11:36Z`. Os artefatos principais dessa leitura estão aqui:
-
-- Relatório executivo: [results/reports/benchmark-progress-20260430/relatorio-leitura-prints.md](results/reports/benchmark-progress-20260430/relatorio-leitura-prints.md)
-- Leituras estruturadas: [results/reports/benchmark-progress-20260430/measurements.json](results/reports/benchmark-progress-20260430/measurements.json)
-- Galeria visual: [results/reports/benchmark-progress-20260430/galeria-screenshots.md](results/reports/benchmark-progress-20260430/galeria-screenshots.md)
-- Evidências adicionais da janela `11:55:00` a `12:02:30` em `two-hop`: [results/reports/benchmark-progress-20260430/evidencias-two-hop-20260430-115500-120230.md](results/reports/benchmark-progress-20260430/evidencias-two-hop-20260430-115500-120230.md)
-
 ## Por que este benchmark existe
 
 Microsserviços normalmente melhoram autonomia de times e escalabilidade, mas também deslocam boa parte da complexidade para a rede. Em vez de chamadas locais em memória, a aplicação passa a depender de cadeias distribuídas como:

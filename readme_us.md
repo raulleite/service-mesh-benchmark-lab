@@ -8,13 +8,6 @@ This repository provides a reproducible benchmark environment for comparing the 
 
 The main dashboard is `comparison-overview`, which exposes live readings for RPS, P99, CPU, and memory. Its active variables are `topology`, `query_step`, and `rate_window`. In practice, the validated operating rule is straightforward: `query_step=5s` works well for visual resolution, but `rate_window` must remain on safe windows of `15s` or more. The currently validated default for stable rate-based charts is `40s`.
 
-The reference run consolidated in this README is `2026-04-30T14:11:36Z`. The main artifacts behind that reading are:
-
-- Executive report: [results/reports/benchmark-progress-20260430/relatorio-leitura-prints.md](results/reports/benchmark-progress-20260430/relatorio-leitura-prints.md)
-- Structured measurements: [results/reports/benchmark-progress-20260430/measurements.json](results/reports/benchmark-progress-20260430/measurements.json)
-- Visual gallery: [results/reports/benchmark-progress-20260430/galeria-screenshots.md](results/reports/benchmark-progress-20260430/galeria-screenshots.md)
-- Additional `two-hop` evidence for the `11:55:00` to `12:02:30` window: [results/reports/benchmark-progress-20260430/evidencias-two-hop-20260430-115500-120230.md](results/reports/benchmark-progress-20260430/evidencias-two-hop-20260430-115500-120230.md)
-
 ## Why this benchmark exists
 
 Microservices usually improve team autonomy and scaling flexibility, but they also move a significant part of the system complexity into the network. Instead of in-process calls, the application becomes dependent on distributed request chains such as:
