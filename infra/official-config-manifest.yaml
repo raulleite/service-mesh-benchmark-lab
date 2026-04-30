@@ -1,0 +1,33 @@
+manifestVersion: 1
+project: service-mesh-benchmark
+kubernetes:
+  profile: single-node-or-isolated-cluster
+meshes:
+  - istio
+  - linkerd
+topologies:
+  - id: two-hop
+    chain: [service-entry, service-middle]
+  - id: three-hop
+    chain: [service-entry, service-middle, service-leaf]
+loadProfile:
+  warmupRps: [10, 50]
+  measurementRps: [10, 100, 250, 500, 750, 1000]
+  repetitionsPerCombination: 3
+resources:
+  replicasPerService: 1
+  app:
+    cpuRequest: 100m
+    cpuLimit: 1000m
+    memoryRequest: 128Mi
+    memoryLimit: 256Mi
+  sidecar:
+    cpuRequest: 50m
+    cpuLimit: 500m
+    memoryRequest: 64Mi
+    memoryLimit: 128Mi
+controls:
+  autoscaling: disabled
+  cache: disabled
+  implicitRetries: disabled
+  resetBetweenRuns: required

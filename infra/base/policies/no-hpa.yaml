@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: no-hidden-optimizations-policy
+  namespace: mesh-benchmark
+data:
+  autoscaling: disabled
+  cache: disabled
+  implicitRetries: disabled
+  resetRequired: "true"

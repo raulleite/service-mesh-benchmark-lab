@@ -1,0 +1,1 @@
+{"title":"Run Overview","panels":[{"title":"Run RPS","type":"timeseries"},{"title":"Run P99","type":"timeseries"},{"title":"Run app CPU","type":"timeseries"},{"title":"Run sidecar CPU","type":"timeseries"}]}

@@ -1,0 +1,1 @@
+{"title":"Mesh Overview","panels":[{"title":"RPS by service","type":"timeseries"},{"title":"P99 latency","type":"timeseries"},{"title":"Application CPU","type":"timeseries"},{"title":"Sidecar CPU","type":"timeseries"}]}

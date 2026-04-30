@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: benchmark-resource-profile
+  namespace: mesh-benchmark
+data:
+  resourceProfileId: default-fixed
+  appCpuRequest: 100m
+  appCpuLimit: 1000m
+  appMemoryRequest: 128Mi
+  appMemoryLimit: 256Mi
+  sidecarCpuRequest: 50m
+  sidecarCpuLimit: 500m
+  sidecarMemoryRequest: 64Mi
+  sidecarMemoryLimit: 128Mi

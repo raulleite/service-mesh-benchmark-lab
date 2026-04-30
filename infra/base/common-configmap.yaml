@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: benchmark-common-config
+  namespace: mesh-benchmark
+data:
+  ASPNETCORE_URLS: http://+:8080
+  SERVICE_MIDDLE_URL: http://service-middle.mesh-benchmark.svc.cluster.local:8080
+  SERVICE_LEAF_URL: http://service-leaf.mesh-benchmark.svc.cluster.local:8080
+  TARGET_ENDPOINT: http://service-entry.mesh-benchmark.svc.cluster.local:8080/invoke

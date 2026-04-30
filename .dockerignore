@@ -1,0 +1,16 @@
+.git/
+.github/
+.specify/
+specs/
+results/
+tests/
+bin/
+obj/
+*.log
+.env
+.env.*
+Dockerfile*
+.dockerignore
+.DS_Store
+._*
+**/._*

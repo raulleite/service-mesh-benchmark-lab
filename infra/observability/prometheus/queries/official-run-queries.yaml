@@ -1,0 +1,7 @@
+queries:
+  rps: sum(rate(http_requests_received_total{app="service-entry",handler="invoke",phase="measurement",topology=~"two-hop|three-hop",namespace=~"mesh-benchmark-(istio|linkerd)"}[1m])) by (environment, topology)
+  p99_latency_secondary: histogram_quantile(0.99, sum(rate(http_request_duration_seconds_bucket{app="service-entry",handler="invoke",phase="measurement",topology=~"two-hop|three-hop",namespace=~"mesh-benchmark-(istio|linkerd)"}[1m])) by (environment, topology, le))
+  service_cpu: sum(rate(container_cpu_usage_seconds_total{namespace=~"mesh-benchmark-(istio|linkerd)",container!~"istio-proxy|linkerd-proxy|POD"}[1m])) by (namespace, pod, container)
+  sidecar_cpu: sum(rate(container_cpu_usage_seconds_total{namespace=~"mesh-benchmark-(istio|linkerd)",container=~"istio-proxy|linkerd-proxy"}[1m])) by (namespace, pod, container)
+labels:
+  resultKey: mesh/environment/scenario/stage/runId

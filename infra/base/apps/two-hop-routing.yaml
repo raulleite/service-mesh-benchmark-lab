@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: topology-two-hop
+  namespace: mesh-benchmark
+data:
+  topology: two-hop
+  chain: service-entry->service-middle

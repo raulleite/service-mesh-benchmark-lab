@@ -1,0 +1,1 @@
+{"title":"Topology Overview","panels":[{"title":"two-hop RPS","type":"timeseries"},{"title":"three-hop RPS","type":"timeseries"},{"title":"P99 by topology","type":"timeseries"},{"title":"Application CPU by topology","type":"timeseries"},{"title":"Sidecar CPU by topology","type":"timeseries"}]}

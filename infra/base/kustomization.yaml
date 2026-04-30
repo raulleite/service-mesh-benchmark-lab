@@ -1,0 +1,13 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - namespaces.yaml
+  - common-configmap.yaml
+  - resource-profile.yaml
+  - apps/service-entry-deployment.yaml
+  - apps/service-middle-deployment.yaml
+  - apps/service-leaf-deployment.yaml
+  - apps/benchmark-runner-deployment.yaml
+  - apps/two-hop-routing.yaml
+  - apps/three-hop-routing.yaml
+  - policies/no-hpa.yaml

@@ -1,0 +1,1 @@
+{"title":"Service Overview","panels":[{"title":"RPS by service","type":"timeseries"},{"title":"P99 by service","type":"timeseries"},{"title":"service-entry CPU","type":"timeseries"},{"title":"service-middle CPU","type":"timeseries"},{"title":"service-leaf CPU","type":"timeseries"},{"title":"sidecar CPU","type":"timeseries"}]}

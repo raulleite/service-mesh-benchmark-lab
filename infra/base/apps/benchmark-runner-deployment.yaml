@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: benchmark-runner
+  namespace: mesh-benchmark
+  labels: { app: benchmark-runner }
+spec:
+  replicas: 1
+  selector:
+    matchLabels: { app: benchmark-runner }
+  template:
+    metadata:
+      labels: { app: benchmark-runner }
+      annotations:
+        sidecar.istio.io/proxyCPU: "50m"
+        sidecar.istio.io/proxyCPULimit: "500m"
+        sidecar.istio.io/proxyMemory: "64Mi"
+        sidecar.istio.io/proxyMemoryLimit: "128Mi"
+        config.linkerd.io/proxy-cpu-request: "50m"
+        config.linkerd.io/proxy-cpu-limit: "500m"
+        config.linkerd.io/proxy-memory-request: "64Mi"
+        config.linkerd.io/proxy-memory-limit: "128Mi"
+    spec:
+      serviceAccountName: benchmark-runner
+      containers:
+        - name: benchmark-runner
+          image: service-mesh/benchmark-runner:local
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+          env:
+            - name: BENCHMARK_SUMMARIES_PATH
+              value: /var/lib/service-mesh/benchmark-summaries
+          envFrom:
+            - configMapRef:
+                name: benchmark-common-config
+          volumeMounts:
+            - name: benchmark-summaries
+              mountPath: /var/lib/service-mesh/benchmark-summaries
+          resources:
+            requests: { cpu: 100m, memory: 128Mi }
+            limits: { cpu: 1000m, memory: 256Mi }
+      volumes:
+        - name: benchmark-summaries
+          hostPath:
+            path: /var/lib/service-mesh/benchmark-summaries
+            type: DirectoryOrCreate
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: benchmark-runner
+  namespace: mesh-benchmark
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: benchmark-runner
+  namespace: mesh-benchmark
+spec:
+  type: NodePort
+  selector: { app: benchmark-runner }
+  ports:
+    - name: http
+      port: 8080
+      targetPort: 8080
+      nodePort: 30081

@@ -1,0 +1,642 @@
+{
+	"uid": "comparison-overview",
+	"title": "Comparison Overview",
+	"tags": [
+		"benchmark",
+		"comparison",
+		"service-mesh"
+	],
+	"timezone": "browser",
+	"schemaVersion": 41,
+	"version": 8,
+	"liveNow": true,
+	"time": {
+		"from": "now-15m",
+		"to": "now"
+	},
+	"timepicker": {
+		"collapse": false,
+		"enable": true,
+		"hidden": false,
+		"notice": false,
+		"now": true,
+		"nowDelay": "",
+		"quick_ranges": [
+			{
+				"display": "Last 5 minutes",
+				"from": "now-5m",
+				"to": "now"
+			},
+			{
+				"display": "Last 15 minutes",
+				"from": "now-15m",
+				"to": "now"
+			},
+			{
+				"display": "Last 30 minutes",
+				"from": "now-30m",
+				"to": "now"
+			},
+			{
+				"display": "Last 1 hour",
+				"from": "now-1h",
+				"to": "now"
+			}
+		],
+		"refresh_intervals": [
+			"off",
+			"5s",
+			"10s",
+			"15s",
+			"30s",
+			"1m"
+		],
+		"status": "Stable",
+		"type": "timepicker"
+	},
+	"refresh": "5s",
+	"editable": true,
+	"graphTooltip": 2,
+	"templating": {
+		"list": [
+			{
+				"name": "topology",
+				"label": "Topology",
+				"type": "custom",
+				"query": "two-hop,three-hop",
+				"current": {
+					"text": "two-hop",
+					"value": "two-hop"
+				},
+				"options": [
+					{
+						"text": "two-hop",
+						"value": "two-hop",
+						"selected": true
+					},
+					{
+						"text": "three-hop",
+						"value": "three-hop",
+						"selected": false
+					}
+				],
+				"includeAll": false,
+				"multi": false
+			},
+			{
+				"name": "query_step",
+				"label": "Query step",
+				"type": "custom",
+				"query": "5s,15s,30s,40s",
+				"current": {
+					"text": "5s",
+					"value": "5s"
+				},
+				"options": [
+					{
+						"text": "5s",
+						"value": "5s",
+						"selected": true
+					},
+					{
+						"text": "15s",
+						"value": "15s",
+						"selected": false
+					},
+					{
+						"text": "30s",
+						"value": "30s",
+						"selected": false
+					},
+					{
+						"text": "40s",
+						"value": "40s",
+						"selected": false
+					}
+				],
+				"includeAll": false,
+				"multi": false
+			},
+			{
+				"name": "rate_window",
+				"label": "Rate window (>=15s)",
+				"type": "custom",
+				"query": "15s,30s,40s,1m",
+				"current": {
+					"text": "40s",
+					"value": "40s"
+				},
+				"options": [
+					{
+						"text": "15s",
+						"value": "15s",
+						"selected": false
+					},
+					{
+						"text": "30s",
+						"value": "30s",
+						"selected": false
+					},
+					{
+						"text": "40s",
+						"value": "40s",
+						"selected": true
+					},
+					{
+						"text": "1m",
+						"value": "1m",
+						"selected": false
+					}
+				],
+				"includeAll": false,
+				"multi": false
+			}
+		]
+	},
+	"panels": [
+		{
+			"id": 1,
+			"type": "timeseries",
+			"title": "RPS Live",
+			"description": "Live request rate measured at service-entry for the selected topology.",
+			"datasource": {
+				"type": "mixed",
+				"uid": "-- Mixed --"
+			},
+			"gridPos": {
+				"h": 8,
+				"w": 12,
+				"x": 0,
+				"y": 0
+			},
+			"fieldConfig": {
+				"defaults": {
+					"color": {
+						"mode": "palette-classic"
+					},
+					"custom": {
+						"axisBorderShow": false,
+						"axisCenteredZero": false,
+						"drawStyle": "line",
+						"fillOpacity": 12,
+						"lineInterpolation": "linear",
+						"lineWidth": 3,
+						"pointSize": 4,
+						"showPoints": "always",
+						"spanNulls": true,
+						"stacking": {
+							"group": "A",
+							"mode": "none"
+						}
+					},
+					"unit": "short"
+				},
+				"overrides": [
+					{
+						"matcher": {
+							"id": "byName",
+							"options": "Istio"
+						},
+						"properties": [
+							{
+								"id": "color",
+								"value": {
+									"mode": "fixed",
+									"fixedColor": "#FF7A59"
+								}
+							}
+						]
+					},
+					{
+						"matcher": {
+							"id": "byName",
+							"options": "Linkerd"
+						},
+						"properties": [
+							{
+								"id": "color",
+								"value": {
+									"mode": "fixed",
+									"fixedColor": "#14B8A6"
+								}
+							}
+						]
+					}
+				]
+			},
+			"options": {
+				"legend": {
+					"calcs": [
+						"lastNotNull"
+					],
+					"displayMode": "table",
+					"placement": "right",
+					"width": 180,
+					"showLegend": true
+				},
+				"tooltip": {
+					"mode": "multi",
+					"sort": "desc"
+				}
+			},
+			"targets": [
+				{
+					"datasource": {
+						"type": "prometheus",
+						"uid": "prometheus-istio"
+					},
+					"expr": "sum(rate(http_requests_received_total{app=\"service-entry\",handler=\"invoke\",topology=\"$topology\",environment=\"istio\",phase=\"measurement\"}[$rate_window]))",
+					"interval": "$query_step",
+					"legendFormat": "Istio",
+					"refId": "A"
+				},
+				{
+					"datasource": {
+						"type": "prometheus",
+						"uid": "prometheus-linkerd"
+					},
+					"expr": "sum(rate(http_requests_received_total{app=\"service-entry\",handler=\"invoke\",topology=\"$topology\",environment=\"linkerd\",phase=\"measurement\"}[$rate_window]))",
+					"interval": "$query_step",
+					"legendFormat": "Linkerd",
+					"refId": "B"
+				}
+			]
+		},
+		{
+			"id": 2,
+			"type": "timeseries",
+			"title": "P99 Latency Live",
+			"description": "Live p99 latency measured at service-entry for the selected topology.",
+			"datasource": {
+				"type": "mixed",
+				"uid": "-- Mixed --"
+			},
+			"gridPos": {
+				"h": 8,
+				"w": 12,
+				"x": 12,
+				"y": 0
+			},
+			"fieldConfig": {
+				"defaults": {
+					"color": {
+						"mode": "palette-classic"
+					},
+					"custom": {
+						"axisBorderShow": false,
+						"axisCenteredZero": false,
+						"drawStyle": "line",
+						"fillOpacity": 12,
+						"lineInterpolation": "linear",
+						"lineWidth": 3,
+						"pointSize": 4,
+						"showPoints": "always",
+						"spanNulls": true,
+						"stacking": {
+							"group": "A",
+							"mode": "none"
+						}
+					},
+					"unit": "ms"
+				},
+				"overrides": [
+					{
+						"matcher": {
+							"id": "byName",
+							"options": "Istio"
+						},
+						"properties": [
+							{
+								"id": "color",
+								"value": {
+									"mode": "fixed",
+									"fixedColor": "#FF7A59"
+								}
+							}
+						]
+					},
+					{
+						"matcher": {
+							"id": "byName",
+							"options": "Linkerd"
+						},
+						"properties": [
+							{
+								"id": "color",
+								"value": {
+									"mode": "fixed",
+									"fixedColor": "#14B8A6"
+								}
+							}
+						]
+					}
+				]
+			},
+			"options": {
+				"legend": {
+					"calcs": [
+						"lastNotNull"
+					],
+					"displayMode": "table",
+					"placement": "right",
+					"width": 180,
+					"showLegend": true
+				},
+				"tooltip": {
+					"mode": "multi",
+					"sort": "desc"
+				}
+			},
+			"targets": [
+				{
+					"datasource": {
+						"type": "prometheus",
+						"uid": "prometheus-istio"
+					},
+					"expr": "histogram_quantile(0.99, sum by (le) (rate(http_request_duration_seconds_bucket{app=\"service-entry\",handler=\"invoke\",topology=\"$topology\",environment=\"istio\",phase=\"measurement\"}[$rate_window]))) * 1000",
+					"interval": "$query_step",
+					"legendFormat": "Istio",
+					"refId": "A"
+				},
+				{
+					"datasource": {
+						"type": "prometheus",
+						"uid": "prometheus-linkerd"
+					},
+					"expr": "histogram_quantile(0.99, sum by (le) (rate(http_request_duration_seconds_bucket{app=\"service-entry\",handler=\"invoke\",topology=\"$topology\",environment=\"linkerd\",phase=\"measurement\"}[$rate_window]))) * 1000",
+					"interval": "$query_step",
+					"legendFormat": "Linkerd",
+					"refId": "B"
+				}
+			]
+		},
+		{
+			"id": 3,
+			"type": "timeseries",
+			"title": "Entry CPU % of limit",
+			"description": "Live CPU usage percentage for the service-entry pod split across application and sidecar containers.",
+			"datasource": {
+				"type": "mixed",
+				"uid": "-- Mixed --"
+			},
+			"gridPos": {
+				"h": 10,
+				"w": 12,
+				"x": 0,
+				"y": 8
+			},
+			"fieldConfig": {
+				"defaults": {
+					"color": {
+						"mode": "palette-classic"
+					},
+					"custom": {
+						"axisBorderShow": false,
+						"axisCenteredZero": false,
+						"drawStyle": "line",
+						"fillOpacity": 10,
+						"lineInterpolation": "linear",
+						"lineWidth": 3,
+						"pointSize": 4,
+						"showPoints": "always",
+						"spanNulls": true,
+						"stacking": {
+							"group": "A",
+							"mode": "none"
+						}
+					},
+					"max": 100,
+					"min": 0,
+					"unit": "percent"
+				},
+				"overrides": [
+					{
+						"matcher": {
+							"id": "byName",
+							"options": "Istio Sidecar"
+						},
+						"properties": [
+							{
+								"id": "color",
+								"value": {
+									"mode": "fixed",
+									"fixedColor": "#F97316"
+								}
+							}
+						]
+					},
+					{
+						"matcher": {
+							"id": "byName",
+							"options": "Istio App"
+						},
+						"properties": [
+							{
+								"id": "color",
+								"value": {
+									"mode": "fixed",
+									"fixedColor": "#FDBA74"
+								}
+							}
+						]
+					},
+					{
+						"matcher": {
+							"id": "byName",
+							"options": "Linkerd Sidecar"
+						},
+						"properties": [
+							{
+								"id": "color",
+								"value": {
+									"mode": "fixed",
+									"fixedColor": "#0F766E"
+								}
+							}
+						]
+					},
+					{
+						"matcher": {
+							"id": "byName",
+							"options": "Linkerd App"
+						},
+						"properties": [
+							{
+								"id": "color",
+								"value": {
+									"mode": "fixed",
+									"fixedColor": "#5EEAD4"
+								}
+							}
+						]
+					}
+				]
+			},
+			"options": {
+				"legend": {
+					"calcs": [
+						"lastNotNull"
+					],
+					"displayMode": "table",
+					"placement": "right",
+					"width": 220,
+					"showLegend": true
+				},
+				"tooltip": {
+					"mode": "multi",
+					"sort": "desc"
+				}
+			},
+			"targets": [
+				{
+					"datasource": {
+						"type": "prometheus",
+						"uid": "prometheus-istio"
+					},
+					"expr": "100 * sum(rate(container_cpu_usage_seconds_total{namespace=\"mesh-benchmark-istio\",pod=~\"service-entry-.*\",container=\"istio-proxy\"}[$rate_window])) / sum((kube_pod_container_resource_limits{namespace=\"mesh-benchmark-istio\",pod=~\"service-entry-.*\",container=\"istio-proxy\",resource=\"cpu\",unit=\"core\"}) or (kube_pod_init_container_resource_limits{namespace=\"mesh-benchmark-istio\",pod=~\"service-entry-.*\",container=\"istio-proxy\",resource=\"cpu\",unit=\"core\"}))",
+					"interval": "$query_step",
+					"legendFormat": "Istio Sidecar",
+					"refId": "A"
+				},
+				{
+					"datasource": {
+						"type": "prometheus",
+						"uid": "prometheus-istio"
+					},
+					"expr": "100 * sum(rate(container_cpu_usage_seconds_total{namespace=\"mesh-benchmark-istio\",pod=~\"service-entry-.*\",container=\"service-entry\"}[$rate_window])) / sum(kube_pod_container_resource_limits{namespace=\"mesh-benchmark-istio\",pod=~\"service-entry-.*\",container=\"service-entry\",resource=\"cpu\",unit=\"core\"})",
+					"interval": "$query_step",
+					"legendFormat": "Istio App",
+					"refId": "B"
+				},
+				{
+					"datasource": {
+						"type": "prometheus",
+						"uid": "prometheus-linkerd"
+					},
+					"expr": "100 * sum(rate(container_cpu_usage_seconds_total{namespace=\"mesh-benchmark-linkerd\",pod=~\"service-entry-.*\",container=\"linkerd-proxy\"}[$rate_window])) / sum((kube_pod_container_resource_limits{namespace=\"mesh-benchmark-linkerd\",pod=~\"service-entry-.*\",container=\"linkerd-proxy\",resource=\"cpu\",unit=\"core\"}) or (kube_pod_init_container_resource_limits{namespace=\"mesh-benchmark-linkerd\",pod=~\"service-entry-.*\",container=\"linkerd-proxy\",resource=\"cpu\",unit=\"core\"}))",
+					"interval": "$query_step",
+					"legendFormat": "Linkerd Sidecar",
+					"refId": "C"
+				},
+				{
+					"datasource": {
+						"type": "prometheus",
+						"uid": "prometheus-linkerd"
+					},
+					"expr": "100 * sum(rate(container_cpu_usage_seconds_total{namespace=\"mesh-benchmark-linkerd\",pod=~\"service-entry-.*\",container=\"service-entry\"}[$rate_window])) / sum(kube_pod_container_resource_limits{namespace=\"mesh-benchmark-linkerd\",pod=~\"service-entry-.*\",container=\"service-entry\",resource=\"cpu\",unit=\"core\"})",
+					"interval": "$query_step",
+					"legendFormat": "Linkerd App",
+					"refId": "D"
+				}
+			]
+		},
+		{
+			"id": 5,
+			"type": "timeseries",
+			"title": "Entry Pod Memory Working Set",
+			"description": "Total working-set memory usage for the full service-entry pod, including application and sidecar containers.",
+			"datasource": {
+				"type": "mixed",
+				"uid": "-- Mixed --"
+			},
+			"gridPos": {
+				"h": 10,
+				"w": 12,
+				"x": 12,
+				"y": 8
+			},
+			"fieldConfig": {
+				"defaults": {
+					"color": {
+						"mode": "palette-classic"
+					},
+					"custom": {
+						"axisBorderShow": false,
+						"axisCenteredZero": false,
+						"drawStyle": "line",
+						"fillOpacity": 10,
+						"lineInterpolation": "linear",
+						"lineWidth": 3,
+						"pointSize": 4,
+						"showPoints": "always",
+						"spanNulls": true,
+						"stacking": {
+							"group": "A",
+							"mode": "none"
+						}
+					},
+					"unit": "bytes"
+				},
+				"overrides": [
+					{
+						"matcher": {
+							"id": "byName",
+							"options": "Istio"
+						},
+						"properties": [
+							{
+								"id": "color",
+								"value": {
+									"mode": "fixed",
+									"fixedColor": "#FF7A59"
+								}
+							}
+						]
+					},
+					{
+						"matcher": {
+							"id": "byName",
+							"options": "Linkerd"
+						},
+						"properties": [
+							{
+								"id": "color",
+								"value": {
+									"mode": "fixed",
+									"fixedColor": "#14B8A6"
+								}
+							}
+						]
+					}
+				]
+			},
+			"options": {
+				"legend": {
+					"calcs": [
+						"lastNotNull"
+					],
+					"displayMode": "table",
+					"placement": "right",
+					"width": 180,
+					"showLegend": true
+				},
+				"tooltip": {
+					"mode": "multi",
+					"sort": "desc"
+				}
+			},
+			"targets": [
+				{
+					"datasource": {
+						"type": "prometheus",
+						"uid": "prometheus-istio"
+					},
+					"expr": "sum(container_memory_working_set_bytes{namespace=\"mesh-benchmark-istio\",pod=~\"service-entry-.*\",container!=\"\",container!=\"POD\"})",
+					"interval": "$query_step",
+					"legendFormat": "Istio",
+					"refId": "A"
+				},
+				{
+					"datasource": {
+						"type": "prometheus",
+						"uid": "prometheus-linkerd"
+					},
+					"expr": "sum(container_memory_working_set_bytes{namespace=\"mesh-benchmark-linkerd\",pod=~\"service-entry-.*\",container!=\"\",container!=\"POD\"})",
+					"interval": "$query_step",
+					"legendFormat": "Linkerd",
+					"refId": "B"
+				}
+			]
+		}
+	]
+}

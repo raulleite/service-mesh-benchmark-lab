@@ -1,0 +1,52 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: mesh-benchmark-istio
+resources:
+  - ../../base
+  - retry-policy.yaml
+  - mtls-policy.yaml
+patches:
+  - target:
+      kind: Namespace
+      name: mesh-benchmark
+    patch: |-
+      - op: add
+        path: /metadata/labels/istio-injection
+        value: enabled
+  - target:
+      kind: Namespace
+      name: mesh-benchmark
+    patch: |-
+      - op: replace
+        path: /metadata/name
+        value: mesh-benchmark-istio
+      - op: add
+        path: /metadata/labels/mesh.environment
+        value: istio
+  - target:
+      kind: ConfigMap
+      name: benchmark-common-config
+    patch: |-
+      - op: replace
+        path: /data/SERVICE_MIDDLE_URL
+        value: http://service-middle.mesh-benchmark-istio.svc.cluster.local:8080
+      - op: replace
+        path: /data/SERVICE_LEAF_URL
+        value: http://service-leaf.mesh-benchmark-istio.svc.cluster.local:8080
+      - op: replace
+        path: /data/TARGET_ENDPOINT
+        value: http://service-entry.mesh-benchmark-istio.svc.cluster.local:8080/invoke
+  - target:
+      kind: Service
+      name: service-entry
+    patch: |-
+      - op: replace
+        path: /spec/ports/0/nodePort
+        value: 30080
+  - target:
+      kind: Service
+      name: benchmark-runner
+    patch: |-
+      - op: replace
+        path: /spec/ports/0/nodePort
+        value: 30081

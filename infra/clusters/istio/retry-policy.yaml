@@ -1,0 +1,58 @@
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: disable-istio-retries
+  namespace: mesh-benchmark
+spec:
+  host: "*.mesh-benchmark-istio.svc.cluster.local"
+  trafficPolicy:
+    tls:
+      mode: ISTIO_MUTUAL
+    connectionPool:
+      tcp:
+        maxConnections: 1024
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: no-implicit-retries
+  namespace: mesh-benchmark
+spec:
+  hosts:
+    - service-entry
+  http:
+    - retries:
+        attempts: 1
+      route:
+        - destination:
+            host: service-entry
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: no-implicit-retries-service-middle
+  namespace: mesh-benchmark
+spec:
+  hosts:
+    - service-middle
+  http:
+    - retries:
+        attempts: 1
+      route:
+        - destination:
+            host: service-middle
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: no-implicit-retries-service-leaf
+  namespace: mesh-benchmark
+spec:
+  hosts:
+    - service-leaf
+  http:
+    - retries:
+        attempts: 1
+      route:
+        - destination:
+            host: service-leaf

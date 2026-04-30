@@ -1,0 +1,38 @@
+apiVersion: policy.linkerd.io/v1beta3
+kind: Server
+metadata:
+  name: benchmark-internal-http
+  namespace: mesh-benchmark
+spec:
+  podSelector:
+    matchExpressions:
+      - key: app
+        operator: In
+        values:
+          - service-middle
+          - service-leaf
+  port: 8080
+---
+apiVersion: policy.linkerd.io/v1alpha1
+kind: MeshTLSAuthentication
+metadata:
+  name: benchmark-namespace-mtls
+  namespace: mesh-benchmark
+spec:
+  identities:
+    - "*.mesh-benchmark-linkerd.serviceaccount.identity.linkerd.cluster.local"
+---
+apiVersion: policy.linkerd.io/v1alpha1
+kind: AuthorizationPolicy
+metadata:
+  name: benchmark-internal-mtls-only
+  namespace: mesh-benchmark
+spec:
+  targetRef:
+    group: policy.linkerd.io
+    kind: Server
+    name: benchmark-internal-http
+  requiredAuthenticationRefs:
+    - group: policy.linkerd.io
+      kind: MeshTLSAuthentication
+      name: benchmark-namespace-mtls

@@ -1,0 +1,32 @@
+apiVersion: security.istio.io/v1
+kind: PeerAuthentication
+metadata:
+  name: mesh-benchmark-default
+  namespace: mesh-benchmark
+spec:
+  mtls:
+    mode: PERMISSIVE
+---
+apiVersion: security.istio.io/v1
+kind: PeerAuthentication
+metadata:
+  name: service-middle-strict-mtls
+  namespace: mesh-benchmark
+spec:
+  selector:
+    matchLabels:
+      app: service-middle
+  mtls:
+    mode: STRICT
+---
+apiVersion: security.istio.io/v1
+kind: PeerAuthentication
+metadata:
+  name: service-leaf-strict-mtls
+  namespace: mesh-benchmark
+spec:
+  selector:
+    matchLabels:
+      app: service-leaf
+  mtls:
+    mode: STRICT

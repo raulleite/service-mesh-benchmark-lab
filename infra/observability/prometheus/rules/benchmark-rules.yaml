@@ -1,0 +1,11 @@
+groups:
+  - name: service-mesh-benchmark
+    rules:
+      - record: benchmark:rps:rate5m
+        expr: sum(rate(http_requests_received_total{app="service-entry",handler="invoke",phase="measurement",topology=~"two-hop|three-hop",namespace=~"mesh-benchmark-(istio|linkerd)"}[5m])) by (environment, topology)
+      - record: benchmark:p99:rate1m
+        expr: histogram_quantile(0.99, sum(rate(http_request_duration_seconds_bucket{app="service-entry",handler="invoke",phase="measurement",topology=~"two-hop|three-hop",namespace=~"mesh-benchmark-(istio|linkerd)"}[1m])) by (environment, topology, le))
+      - record: benchmark:container_cpu:rate5m
+        expr: sum(rate(container_cpu_usage_seconds_total{namespace=~"mesh-benchmark-(istio|linkerd)"}[5m])) by (namespace, pod, container)
+      - record: benchmark:sidecar_cpu:rate5m
+        expr: sum(rate(container_cpu_usage_seconds_total{namespace=~"mesh-benchmark-(istio|linkerd)",container=~"istio-proxy|linkerd-proxy"}[5m])) by (namespace, pod, container)

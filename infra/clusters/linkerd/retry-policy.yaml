@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: linkerd-no-implicit-retries
+  namespace: mesh-benchmark
+data:
+  retries: disabled
+  notes: Linkerd retry resources are intentionally absent for benchmark comparability.
